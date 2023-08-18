@@ -1,9 +1,9 @@
-# Angular 16 Standalone Lib Repro
+# Angular 16 Bug Repro Case - for @Input({transform: ..})
 
 This is a repro case for:
-https://github.com/angular/angular
+https://github.com/angular/angular/issues/51424
 
-Created with:
+Created on 8/18/2023 with:
 
 ```ps1
 yarn dlx --package @angular/cli ng new ng16-standalone-lib --standalone --package-manager=yarn --create-application=false --minimal --commit=false
@@ -20,11 +20,12 @@ yarn ng g library util -p util --project-root libs/util --standalone
 
 ## Bugbug
 
-Issue Title: Directive not recognized as directive when using @Input transform
+Issue Title: Directive compile broken when using @Input transform
 
 The bug can be reproduced by:
 
 ```sh
+git clone https://github.com/johncrim/bug-ng16-input-transform
 yarn
 yarn build:all
 ```
