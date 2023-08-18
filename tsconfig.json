@@ -20,11 +20,8 @@
     "module": "ES2022",
     "useDefineForClassFields": false,
     "paths": {
-      "ui-components": [
-        "dist/ui-components"
-      ],
-      "util": [
-        "dist/util"
+      "@myorg/*": [
+        "dist/*"
       ]
     },
     "lib": [
@@ -33,6 +30,7 @@
     ]
   },
   "angularCompilerOptions": {
+    "strict": true,
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,

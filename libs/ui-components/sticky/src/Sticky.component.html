@@ -1,0 +1,13 @@
+<!-- <div ui-sticky-sentry></div> -->
+
+<!-- This spacer takes up the vertical space of the sticky
+element when the sticky element is fixed. -->
+<div #spacer class="Sticky-spacer"
+  [ui-mirror-height]="sticky">
+</div>
+
+<div #sticky class="Sticky"
+  [ui-mirror-width]="spacer">
+<!-- *ui-dock-to="_dockTo" -->
+  <ng-content></ng-content>
+</div>
