@@ -2,9 +2,9 @@
  * Copyright 2023 Fintellect Inc. All Rights Reserved.
  */
 
-import { Directive, Input, OnChanges } from '@angular/core';
-import { resizeObservable, skipSizeZero } from '@myorg/util';
-import { auditTime, distinctUntilChanged, map, Observable, shareReplay, startWith } from 'rxjs';
+import { Directive, ElementRef, Input, OnChanges } from '@angular/core';
+import { coerceElement, resizeObservable, skipSizeZero } from '@myorg/util';
+import { auditTime, distinctUntilChanged, map, Observable, shareReplay, startWith, tap } from 'rxjs';
 
 /**
  * Continually updates the height of the host element to match the height of a source element.
@@ -19,7 +19,16 @@ export class MirrorHeightDirective
 
   /** The element to watch the height of, and match. */
   @Input({ alias: 'ui-mirror-height', required: true })
-  public source!: Element;
+  public set source(v: HTMLElement | ElementRef<HTMLElement>) {
+    this._source = coerceElement(v);
+  }
+  public get source(): HTMLElement {
+    if (!this._source) {
+      throw new Error('ui-mirror-height not set');
+    }
+    return this._source;
+  }
+  private _source?: HTMLElement;
 
   /** Returns the {@link Observable} for the height of {@link source}. */
   public get sourceHeight$(): Observable<number> {
@@ -33,12 +42,12 @@ export class MirrorHeightDirective
     const sourceElement = this.source;
     if (sourceElement) {
       const height$ = resizeObservable(sourceElement, { box: 'border-box' }).pipe(
-        skipSizeZero(),
-        auditTime(80), // Give size time to stabilize, and prevent "ResizeObserver loop limit exceeded"
+        //skipSizeZero(),
+        //auditTime(80), // Give size time to stabilize, and prevent "ResizeObserver loop limit exceeded"
         // Currently Safari doesn't support borderBoxSize, so fallback to directly reading the element's height
-        map(resizeEntry => resizeEntry.borderBoxSize?.[0].blockSize ?? (resizeEntry.target as HTMLElement).offsetHeight),
-        startWith((sourceElement as HTMLElement).offsetHeight),
+        map((resizeEntry: ResizeObserverEntry) => resizeEntry.borderBoxSize?.[0].blockSize ?? resizeEntry.contentRect.height),
         distinctUntilChanged(),
+        tap(h => console.log('mirror-height : ', h)),
         shareReplay(1)
         // map(h => h + 'px')
       );
